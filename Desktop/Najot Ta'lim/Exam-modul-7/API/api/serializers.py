@@ -48,8 +48,8 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = ['name', 'teacher', 'course', 'status']
 
 class StudentGroupSerializer(serializers.ModelSerializer):
-    group = GroupSerializer(many=True, read_only=True)
-    student = StudentSerializer(many=True, read_only=True)
+    group = GroupSerializer(many=False, read_only=True)
+    student = StudentSerializer(many=False, read_only=True)
     class Meta:
         model = StudentGroup
         fields = ['group', 'student', 'status']

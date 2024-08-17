@@ -6,6 +6,11 @@ class Status(models.TextChoices):
     draft = 'df', 'draft'
     publish = 'pb', 'publish'
 
+
+class Status_st_tch(models.TextChoices):
+    student = 'st', 'student'
+    teacher = 'tch', 'teacher'
+
 class User(AbstractUser):
     image = models.ImageField(upload_to='users/')
     phone_number = models.CharField(max_length=15, unique=True)
@@ -30,8 +35,9 @@ class Category(models.Model):
     status = models.CharField(max_length=4, choices=Status.choices, default=Status.publish)
     created_at = models.DateField(auto_now_add=True)
     
-class Teacher(models.Model):
-    status_pb = models.CharField(max_length=4, choices=Status.choices, default=Status.publish)
+class Teacher(User):
+    status = models.CharField(max_length=4, choices=Status.choices, default=Status.publish)
+    status_st_tch = models.CharField(max_length=4, choices=Status_st_tch.choices, default=Status_st_tch.teacher, editable=False)
     
     class Meta:
         verbose_name = "Teacher"
@@ -70,6 +76,7 @@ class Tasks(models.Model):
 
 class Student(User):
     status = models.CharField(max_length=4, choices=Status.choices, default=Status.publish)
+    status_st_tch = models.CharField(max_length=4, choices=Status_st_tch.choices, default=Status_st_tch.student, editable=False)
     
     class Meta:
         verbose_name = 'Student'
