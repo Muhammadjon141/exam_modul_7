@@ -9,6 +9,21 @@ class Status(models.TextChoices):
 class User(AbstractUser):
     image = models.ImageField(upload_to='users/')
     phone_number = models.CharField(max_length=15, unique=True)
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='custom_user_set',  # related_name o'zgartirildi
+        blank=True,
+        help_text='The groups this user belongs to.',
+        verbose_name='groups',
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='custom_permission_set',  # related_name o'zgartirildi
+        blank=True,
+        help_text='Specific permissions for this user.',
+        verbose_name='user permissions',
+    )
+
     
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -24,7 +39,7 @@ class Teacher(models.Model):
         
 class Course(models.Model):
     title = models.CharField(max_length=100)
-    description = models.TimeField()
+    description = models.TextField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
     image = models.ImageField(upload_to='courses/')
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
