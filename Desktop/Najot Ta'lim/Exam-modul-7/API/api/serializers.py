@@ -1,32 +1,55 @@
 from rest_framework import serializers
-from .models import Artist, Albom, Song
+from .models import StudentGroup, Group, Student, Tasks, Lesson, Modules, Course, Teacher, Category
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['name', 'status']
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['id','first_name', 'last_name', 'image', 'username']
+
+
+class TeacherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = ['id','first_name', 'last_name', 'image', 'username']
         
-class AlbomSerializer(serializers.ModelSerializer):
+class CourseSerializer(serializers.ModelSerializer):
+    teacher = TeacherSerializer(many=False,read_only=True)
+    category = CategorySerializer(many=False,read_only=True)
     class Meta:
-        model = Albom
-        fields = ['title', 'description', 'image', 'artist', 'songs']
+        model = Course
+        fields = ['title', 'description', 'price', 'image', 'teacher', 'category', 'status']
 
-class ArtistSerializer_to_Song(serializers.ModelSerializer):
-    alboms = AlbomSerializer(many=True, read_only=True)
+class ModulesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Artist
-        fields = ['first_name', 'last_name', 'username', 'image', 'birth_date', 'songs', 'alboms']
-
-class SongSerializer(serializers.ModelSerializer):
-    albom = AlbomSerializer(many=False, read_only=True)
-    artist = ArtistSerializer_to_Song(many=True, read_only=True)
-    class Meta:
-        model = Song
-        fields = ['title', 'image', 'albom', 'artist', 'listen_count', 'status']
-    
-
-class ArtistSerializer(serializers.ModelSerializer):
-    songs = SongSerializer(many=True, read_only=True)
-    alboms = AlbomSerializer(many=True, read_only=True)
-    class Meta:
-        model = Artist
-        fields = ['first_name', 'last_name', 'username', 'image', 'birth_date', 'songs', 'alboms']
+        model = Modules
+        fields = ['name', 'description', 'course', 'status']
         
-    def get_songs(self, obj):
-        return SongSerializer(obj.song_set.all(), many=True).data
+class LessonSerializer(serializers.ModelSerializer):
+    modules = ModulesSerializer(many=False, read_only=True)
+    class Meta:
+        model = Lesson
+        fields = ['name', 'description', 'modules', 'status']
+
+class TasksSerializer(serializers.ModelSerializer):
+    lesson = LessonSerializer(many=False, read_only=True)
+    class Meta:
+        model = Tasks
+        fields = ['name', 'file', 'lesson', 'status']
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ['name', 'teacher', 'course', 'status']
+
+class StudentGroupSerializer(serializers.ModelSerializer):
+    group = GroupSerializer(many=True, read_only=True)
+    student = StudentSerializer(many=True, read_only=True)
+    class Meta:
+        model = StudentGroup
+        fields = ['group', 'student', 'status']

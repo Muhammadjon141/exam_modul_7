@@ -1,59 +1,78 @@
 from django.db import models
-from django.utils import timezone
 from django.apps import apps
+from django.contrib.auth.models import AbstractUser
 
-class StatusChoise(models.TextChoices):
-    Draft = 'df', 'Draft'
-    Publish = 'pb', 'Public'
+class Status(models.TextChoices):
+    draft = 'df', 'draft'
+    publish = 'pb', 'publish'
 
-class Artist(models.Model):
-    first_name = models.CharField(max_length=50, null=True)
-    last_name = models.CharField(max_length=50, null=True)
-    username = models.CharField(max_length=50, null=True)
-    image = models.ImageField(upload_to='artists/')
-    birth_date = models.DateField(default=timezone.now)
-    create_date = models.DateField(auto_now_add=True)
+class User(AbstractUser):
+    image = models.ImageField(upload_to='users/')
+    phone_number = models.CharField(max_length=15, unique=True)
     
-    def get_songs(self):
-        artist = self.objects.get(id=id)
-        songs = artist.songs.all()
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+    status = models.CharField(max_length=4, choices=Status.choices, default=Status.publish)
+    created_at = models.DateField(auto_now_add=True)
+    
+class Teacher(models.Model):
+    status_pb = models.CharField(max_length=4, choices=Status.choices, default=Status.publish)
+    
+    class Meta:
+        verbose_name = "Teacher"
+        verbose_name_plural = 'Teachers'
         
-    def __str__(self) -> str:
-        return self.first_name
-        
-class Albom(models.Model):
-    title = models.CharField(max_length=80, null=True)
+class Course(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TimeField()
+    price = models.DecimalField(max_digits=5, decimal_places=2)
+    image = models.ImageField(upload_to='courses/')
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    status = models.CharField(max_length=4, choices=Status.choices, default=Status.publish)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+class Modules(models.Model):
+    name = models.CharField(max_length=50)
     description = models.TextField()
-    image = models.ImageField(upload_to='alboms/')
-    artist = models.ManyToManyField(Artist, related_name='alboms')
-    create_date = models.DateField(auto_now_add=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    status = models.CharField(max_length=4, choices=Status.choices, default=Status.publish)
+    created_at = models.DateTimeField(auto_now_add=True)
     
-    def __str__(self) -> str:
-        return self.title
+class Lesson(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+    modules = models.ForeignKey(Modules, on_delete=models.CASCADE)
+    status = models.CharField(max_length=4, choices=Status.choices, default=Status.publish)
+    created_at = models.DateTimeField(auto_now_add=True)
     
-class Song(models.Model):
-    title = models.CharField(max_length=80, null=True)
-    image = models.ImageField(upload_to='songs/')
-    albom = models.ForeignKey(Albom, related_name='songs', on_delete=models.CASCADE)
-    artist = models.ManyToManyField(Artist, related_name='songs')
-    listen_count = models.IntegerField(default=0)
-    status = models.CharField(max_length=5, choices=StatusChoise.choices, default=StatusChoise.Publish)
-    create_date = models.DateField(auto_now_add=True)
+class Tasks(models.Model):
+    name = models.CharField(max_length=50)
+    file = models.FileField(upload_to='file_tasks/')
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    status = models.CharField(max_length=4, choices=Status.choices, default=Status.publish)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    def df_to_pb(self):
-        if self.status == 'df':
-            self.status = 'pb'
-            self.save()
-            
-    def pb_to_df(self):
-        if self.status == 'pb':
-            self.status = 'df'
-            self.save()
-
-    def __str__(self) -> str:
-        return super().__str__()
-
-
+class Student(User):
+    status = models.CharField(max_length=4, choices=Status.choices, default=Status.publish)
+    
+    class Meta:
+        verbose_name = 'Student'
+        verbose_name_plural = 'Students'
+        
+class Group(models.Model):
+    name = models.CharField(max_length=50)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    status = models.CharField(max_length=4, choices=Status.choices, default=Status.publish)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+class StudentGroup(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    status = models.CharField(max_length=4, choices=Status.choices, default=Status.publish)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
 class Get_info:
     @staticmethod
     def get_queryset(model_name):

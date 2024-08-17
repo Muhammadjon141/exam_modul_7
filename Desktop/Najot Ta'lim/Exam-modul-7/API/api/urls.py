@@ -1,12 +1,19 @@
-from .views import ArtistApiWeb, AlbomApiWeb, SongApiWeb
+from .views import (CategoryApiWeb, StudentGroupApiWeb, GroupApiWeb, TasksApiWeb, LessonApiWeb, ModulesApiWeb, 
+                    CourseApiWeb, TeacherApiWeb, StudentApiWeb)
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 
 router = DefaultRouter()
-router.register(r'artist', ArtistApiWeb, basename='artist'),
-router.register(r'albom', AlbomApiWeb, basename='albom'),
-router.register(r'song', SongApiWeb, basename='song')
+router.register(r'category', CategoryApiWeb, basename='category'),
+router.register(r'student-group', StudentGroupApiWeb, basename='student-group'),
+router.register(r'tasks', TasksApiWeb, basename='tasks'),
+router.register(r'lesson', LessonApiWeb, basename='lesson'),
+router.register(r'group', GroupApiWeb, basename='group'),
+router.register(r'modules', ModulesApiWeb, basename='modules'),
+router.register(r'course', CourseApiWeb, basename='course'),
+router.register(r'teacher', TeacherApiWeb, basename='teacher'),
+router.register(r'student', StudentApiWeb, basename='student'),
 
 urlpatterns = [
     path('', include(router.urls)),
