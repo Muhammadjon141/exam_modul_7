@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (Index_View, Login_View, Register_View, Log_OutView, Team_View, Testimonial_View, Service_View, Offer_View,
-                    Feature_View, FAQ_View, Contact_View, Blog_View, Course_View, Error_View, CourseView)
+                    Feature_View, FAQ_View, Contact_View, Blog_View, Course_View, Error_View, CoursedetailView)
 
 urlpatterns = [
     path('', Index_View.as_view(), name='index'),
@@ -17,5 +17,5 @@ urlpatterns = [
     path('blog/', Blog_View.as_view(), name='blog'),
     path('course/', Course_View.as_view(), name='course'),
     path('error/', Error_View.as_view(), name='error'),
-    path('course-detail/<int:id>', CourseView.as_view(), name='course-detail'),
+    path('course-detail/<int:id>', CoursedetailView.as_view(), name='course-detail'),
 ]

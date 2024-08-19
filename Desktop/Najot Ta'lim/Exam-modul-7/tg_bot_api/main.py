@@ -13,7 +13,7 @@ dp = Dispatcher(bot)
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     await message.reply("""Salom! O'quv markaz botiga xush kelibsiz! Artistlar haqida ma'lumot olish uchun 
-                        /get_courses - Kurslar ismalari
+                        /get_courses - Kurslar ro'yhati
                         /get_teachers - O'qituvchilar ro'yhati
                         /get_students - Talabalar ro'yhati
                         buyrug‘ini yuboring.""")

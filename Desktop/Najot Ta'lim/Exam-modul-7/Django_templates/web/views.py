@@ -225,7 +225,7 @@ class Course_View(View):
             courses = Get_info_api.get_course()
             return render(request, 'course.html', context={'courses':courses})
     
-class CourseView(View):
+class CoursedetailView(View):
     def get(self, request, id):
         course = Get_info_api.get_course_detail(id)
         return render(request, 'course_detail.html', context={'course':course})
