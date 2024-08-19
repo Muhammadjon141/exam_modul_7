@@ -19,8 +19,8 @@ class CategoryApiWeb(ModelViewSet):
 class StudentGroupApiWeb(ModelViewSet):
     queryset = Get_info.get_queryset('StudentGroup')
     serializer_class = StudentGroupSerializer 
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]   
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]   
 
 class GroupApiWeb(ModelViewSet):
     queryset = Get_info.get_queryset('Group')
