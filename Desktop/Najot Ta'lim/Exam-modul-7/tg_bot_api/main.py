@@ -12,54 +12,54 @@ dp = Dispatcher(bot)
 
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
-    await message.reply("""Salom! Spotify botiga xush kelibsiz! Artistlar haqida ma'lumot olish uchun 
-                        /get_artists - Artistlar ismalari
-                        /get_songs - Qo'shiqlar ro'yhati
-                        /get_alboms - Albomlar ro'yhati
+    await message.reply("""Salom! O'quv markaz botiga xush kelibsiz! Artistlar haqida ma'lumot olish uchun 
+                        /get_courses - Kurslar ismalari
+                        /get_teachers - O'qituvchilar ro'yhati
+                        /get_students - Talabalar ro'yhati
                         buyrug‘ini yuboring.""")
 
-@dp.message_handler(commands=['get_artists'])
+@dp.message_handler(commands=['get_courses'])
 async def get_artists(message: types.Message):
-    response = requests.get('http://127.0.0.1:8000/api/artist/')
+    response = requests.get('http://127.0.0.1:8000/api/course/')
     if response.status_code == 200:
         artists = response.json()
         if artists:
             for artist,i in zip(artists, range(1, (len(artists)+1))):
-                artists_list = artist['first_name']
-                await message.reply(f"Qo'shiqchi ismlari:\n{i}. {artists_list}")
+                artists_list = artist['title']
+                await message.reply(f"Kurslar ro'yhati:\n{i}. {artists_list}")
         else:
-            await message.reply("Qo'shiqchi topilmadi.")
+            await message.reply("Kurslar topilmadi.")
     else:
-        await message.reply("Qo'shiqlarni olishda xatolik yuz berdi.")
+        await message.reply("Kurslarni olishda xatolik yuz berdi.")
 
 
-@dp.message_handler(commands=['get_alboms'])
+@dp.message_handler(commands=['get_teachers'])
 async def get_alboms(message: types.Message):
-    response = requests.get('http://127.0.0.1:8000/api/albom/')
+    response = requests.get('http://127.0.0.1:8000/api/teacher/')
     if response.status_code == 200:
         alboms = response.json()
         if alboms:
             for albom,i in zip(alboms, range(1, (len(alboms)+1))):
-                alboms_list = albom['title']
-                await message.reply(f"Albomlar nomi:\n{i}. {alboms_list}")
+                alboms_list = f"{albom['first_name']} {albom['last_name']}"
+                await message.reply(f"O'qituvchilar ismi:\n{i}. {alboms_list}")
         else:
-            await message.reply("Albomlar topilmadi.")
+            await message.reply("O'qituvchilar topilmadi.")
     else:
-        await message.reply("Albomlarni olishda xatolik yuz berdi.")
+        await message.reply("O'qituvchilarni olishda xatolik yuz berdi.")
 
-@dp.message_handler(commands=['get_songs'])
+@dp.message_handler(commands=['get_students'])
 async def get_songs(message: types.Message):
-    response = requests.get('http://127.0.0.1:8000/api/song/')
+    response = requests.get('http://127.0.0.1:8000/api/student/')
     if response.status_code == 200:
         songs = response.json()
         if songs:
             for song,i in zip(songs, range(1, (len(songs)+1))):
-                songs_list = song['title']
-                await message.reply(f"Qo'shiqlar nomi:\n{i}. {songs_list}")
+                songs_list = f"{song['first_name']} {song['last_name']}"
+                await message.reply(f"Student ismi:\n{i}. {songs_list}")
         else:
-            await message.reply("Qo'shiqlar topilmadi.")
+            await message.reply("Studentlar topilmadi.")
     else:
-        await message.reply("Qo'shiqlarni olishda xatolik yuz berdi.")
+        await message.reply("Studentlarni olishda xatolik yuz berdi.")
 
 
 if __name__ == '__main__':
