@@ -6,6 +6,7 @@ from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from .models import (Course, Tasks, Lesson, Modules)
 from .serializers import (CategorySerializer, StudentGroupSerializer, GroupSerializer, TasksSerializer, LessonSerializer, ModulesSerializer,
                           CourseSerializer, TeacherSerializer, StudentSerializer, MessageSerializer)
 
@@ -33,23 +34,48 @@ class TasksApiWeb(ModelViewSet):
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [IsAuthenticated]
     
+    @action(detail=False, methods=['get'])
+    def active_tasks(self, request):
+        active = Tasks.objects.filter(status='pb')
+        serializer = self.get_serializer(active, many=True)
+        return Response(serializer.data)
+    
 class LessonApiWeb(ModelViewSet):
     queryset = Get_info.get_queryset('Lesson')
     serializer_class = LessonSerializer
     # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated] 
+    # permission_classes = [IsAuthenticated]
+    
+    @action(detail=False, methods=['get'])
+    def active_lesson(self, request):
+        active = Lesson.objects.filter(status='pb')
+        serializer = self.get_serializer(active, many=True)
+        return Response(serializer.data) 
 
 class ModulesApiWeb(ModelViewSet):
     queryset = Get_info.get_queryset('Modules')
     serializer_class = ModulesSerializer
     # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]  
+    # permission_classes = [IsAuthenticated]
+    
+    @action(detail=False, methods=['get'])
+    def active_modules(self, request):
+        active = Modules.objects.filter(status='pb')
+        serializer = self.get_serializer(active, many=True)
+        return Response(serializer.data)
+    
 
 class CourseApiWeb(ModelViewSet):
     queryset = Get_info.get_queryset('Course')
     serializer_class = CourseSerializer
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [IsAuthenticated]
+    
+    @action(detail=False, methods=['get'])
+    def active_courses(self, request):
+        active = Course.objects.filter(status='pb')
+        serializer = self.get_serializer(active, many=True)
+        return Response(serializer.data)
 
 class TeacherApiWeb(ModelViewSet):
     queryset = Get_info.get_queryset('Teacher')
