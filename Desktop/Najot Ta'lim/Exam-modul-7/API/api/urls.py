@@ -5,14 +5,6 @@ from rest_framework.routers import DefaultRouter
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-# Import your viewsets
-from .views import TeamViewSet
-
-# Router configuration
-router = DefaultRouter()
-router.register(r'teams', TeamViewSet)
-
-# Schema view configuration
 schema_view = get_schema_view(
    openapi.Info(
       title="My API",
